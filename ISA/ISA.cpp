@@ -104,6 +104,47 @@ void testing(string fileName) {
 
 int main()
 {	
-		testing("Test_3.txt");
+	int altitude;
+	int val;
+	cout << "welcome to ISA model Temperture calculater \n\
+please select:\n\
+1. to self calc\n\
+2. to Testing" << endl;
+	try {
+		cin >> val;
+		if (val == 1) {
+			int altitude;
+			cout << "please select altitude from 0-25000:" << endl;
+			cin >> altitude;
+			ISACalc(altitude);
+		}
+		else if (val == 2) {
+			int choice;
+			cout << "Please select the desired file name:\n\
+1.Test_1.txt\n\
+2.Test_2.txt\n\
+3.Test_3.txt" << endl;
+			cin >> choice;
+			if (choice == 1) {
+				testing("Test_1.txt");
+			}
+			else if (choice == 2) {
+				testing("Test_2.txt");
+			}
+			else if (choice == 3) {
+				testing("Test_3.txt");
+			}
+			else {
+				throw"invalid value! error!";
+			}
+
+		}
+		else {
+			throw "invalid value - error!";
+		}
+	}
+	catch (const char* exp) {
+		cout << exp << endl;
+	}
 	
 }
