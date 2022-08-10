@@ -7,95 +7,103 @@
 using namespace std;
 
 
-const int  TempSeaLevel = 15;
-const float TheTemperatureDropPerMeter = 0.0065;
-int ISACalc(int high) {
-	try
-	{
 
-		if (high > 25000 || high < 0) {
-			throw("error");
-				return 0;
+const int  TempSeaLevel = 15; /*the base Temperture - the temperture in sea level*/
+const float TheTemperatureDropPerMeter = 0.00649; /*the Temperature Drop per meter- from 11000-20000*/
+const float TheTemperatureDropPerMeterOver20 = -0.001;  /*the Temperature Drop per meter- from 20000-25000*/
+/// <summary>
+/// this function calculate Temperature by a given altitude by ISA model.
+/// </summary>
+/// <param name="altitude"></param>
+/// <returns></returns>
+int ISACalc(int altitude) {
+
+		//error!
+		if (altitude > 25000 || altitude < 0) {
+			throw "invalid value";
+	
 
 		}
-		else if (high < 11000) {
-			int h = TempSeaLevel - (int)(high * TheTemperatureDropPerMeter);
-			return h;
+		//The temperature changes with a temperature drop of 6.49 degrees per 1000 meters on this level
+		else if (altitude < 11000) {
+			int Temperature  = TempSeaLevel - (int)(altitude * TheTemperatureDropPerMeter);
+			cout << ","<< Temperature << endl;
+			return Temperature;
+
 		}
-		else if (high < 20000) {
+		//the Temperature is constant in this level and eqeal to -56.5
+		else if (altitude <= 20000) {
+			cout <<","<< -56 << endl;
 			return -56;
+
 		}
-		
-	}
+		//The temperature changes with a temperature drop of -1.00 degrees per 1000 meters on this level
 
+		else {
+			int Temperature = -56 - (int)((altitude-20000) * TheTemperatureDropPerMeterOver20);
+			cout << "," << Temperature << endl;
+			return Temperature;
+	
+		}
 
-
-
-
-	catch (string exeption)
-	{
-		cout << exeption;
-	}
 }
+/// <summary>
+/// the function get name of I/O file a
+/// nd ecxute each line in the file on ISAcalc function,
+///  then its Compares the result against the expected output
+/// and print to the console the result.
+/// </summary>
+/// <param name="fileName"></param>
 void testing(string fileName) {
 	ifstream fileTesting;
 	fileTesting.open(fileName, ios::in | ios::out);
-	cout << fileName;
+
 	if (!fileTesting) {
-		throw("error while open file!");
-		cout << "gghfh";
+		throw"error while open file!";
+
 	}
 	else {
 		string temperature;
 		string altitude;
 		getline(fileTesting, temperature);
+		cout << "altitude" << "," << "temperature input ," << "temperature function " << endl;
 		// Use a while loop together with the getline() function to read the file line by line
 		while (!fileTesting.eof()) {
 			getline(fileTesting, temperature, ',');
 			getline(fileTesting, altitude);
-			cout << temperature<<" " << altitude;
-			
-		/*	fileTesting >> temperature;
-			fileTesting >> altitude;*/
-			//cout << temperature << altitude;
 
+			cout << altitude << ", " << temperature ;
+			try
+			{
 			// Output the text from the file
 			if (ISACalc(atoi(altitude.c_str())) == atoi(temperature.c_str())) {
-				cout << "true" << endl; /*temperature
-					<< altitude << endl;*/
+			
+				cout << "true" << endl;
 			}
 			else {
 				cout << "false" << endl;
+
 			}
+		
 		}
 
-		//// Close the file
-		//MyReadFile.close();
+		catch (const char* exeption)
+		{
+			cout << exeption << endl;
+		}
 
-		//while (!fileTesting.eof()) {
-		//        fileTesting >> line;
-		//        cout << line << endl;
-		//}
+
+		}
+
+		// Close the file
+		fileTesting.close();
+
 	}
 }
 
 
 int main()
-{
-	//cout << ISACalc(310);
-
-	testing("Test_2.txt");
+{	
+		testing("Test_3.txt");
+	
 }
-
-
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
